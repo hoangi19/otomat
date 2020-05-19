@@ -1,12 +1,13 @@
 class DFA:
     def __init__(self, states, sigma, start_state, accepting_states, transition_functions):
-        self.states = set(states)
-        self.sigma = set(sigma)
-        self.start_state = start_state
-        self.accepting_states = set(accepting_states)
-        self.transition_functions = transition_functions
-        self.extra_state = "exS"
-        self.fill()
+        self.states = set(states)                               #trạng thái
+        self.sigma = set(sigma)                                 #bảng chữ cái
+        self.start_state = start_state                          #trạng thái bắt đầu
+        self.accepting_states = set(accepting_states)           #trạng thái kết
+        self.transition_functions = transition_functions        #hàm chuyển trạng thái
+        self.extra_state = "exS"                                #đỉnh thêm mới
+        
+        self.fill_otomat()
         self.NFA2DFA()
     
     #Trạng thái từ state nhận epsilon
@@ -35,8 +36,8 @@ class DFA:
         return res
     
     #Làm đầy đủ otomat
-    def fill(self):
-        create_extra_state = False
+    def fill_otomat(self):
+        create_extra_state = False #có tạo đỉnh mới hay ko?
         for s in self.states:
             if not s in transition_functions:
                 create_extra_state = True
@@ -71,10 +72,12 @@ class DFA:
             cs = '_'.join(str(v) for v in current_state)
             res_states.add('_'.join(str(v) for v in current_state))
             
+            #check trạng thái hiện tại là trạng thái kết
             for acs in self.accepting_states:
                 if acs in cs:
                     res_accepting_states.add(cs)
 
+            #thử đi theo các sigma
             for symbol in sigma:
                 if symbol == '-':
                     continue
@@ -92,33 +95,36 @@ class DFA:
                    res_transition_functions[cs] = {}
                 res_transition_functions[cs][symbol] = ns
                 
-        
         self.states = res_states
         self.sigma = res_sigma
         self.start_state = '_'.join(str(v) for v in res_start_state)
         self.accepting_states = res_accepting_states
         self.transition_functions = res_transition_functions
 
+###########################################################################################
 #Ví dụ otomat = { states, sigma, start_state, accepting_states, transition_functions }
-states = ['S0', 'S1', 'S2']
-sigma = ['0', '1']
-start_state = 'S0'
-accepting_states = ['S2']
+states = ['P0', 'P1', 'P2']
+sigma = ['a', 'b', 'c']
+start_state = 'P0'
+accepting_states = ['P1', 'P2']
 
 transition_functions = {
-        'S0' : {
-            '-' : ['S2'],
-            '1' : ['S1'],
-            '0' : ['S1']
+        'P0' : {
+            'a' : ['P1'],
+            'b' : ['P1', 'P2'],
+            'c' : ['P2']
         },
-        'S1' : {
-            '0' : ['S2'],
-            '1' : ['S2'],
+        'P1' : {
+            'a' : ['P2'],
+            'c' : ['P0', 'P2'],
         },
-        'S2' : {
-
+        'P2' : {
+            'a' : ['P1'],
+            'b' : ['P1'],
+            'c' : ['P2']
         }
     }
+###########################################################################################
 
 print("Otomat trước khi đơn định đơn định : ")
 print("Tập trạng thái : ", set(sorted(states)))
