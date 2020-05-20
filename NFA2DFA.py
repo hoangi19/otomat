@@ -120,7 +120,7 @@ if __name__ == "__main__":
     accepting_states = set()
     transition_functions = {}
     
-    # input_file_name = "inputOtomat.txt"
+    # input_file_name = "example.txt"
     input_file_name = input("Đường dẫn tới file input : ")
     ip_file = open(input_file_name, 'r')
     states = ip_file.readline()[:-1].split(",")
