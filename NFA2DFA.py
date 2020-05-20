@@ -5,7 +5,7 @@ class DFA:
         self.start_state = start_state                          #trạng thái bắt đầu
         self.accepting_states = set(accepting_states)           #trạng thái kết
         self.transition_functions = transition_functions        #hàm chuyển trạng thái
-        self.extra_state = "exS"                                #đỉnh thêm mới
+        self.extra_state = "exS"                                #đỉnh thêm mới (nếu có)
         
         self.fill_otomat()
         self.NFA2DFA()
@@ -101,27 +101,35 @@ class DFA:
         self.accepting_states = res_accepting_states
         self.transition_functions = res_transition_functions
 
+# def input_from_file(states, sigma, start_state, accepting_states, transition_functions):
+
+#     pass
+
+# if __name__ == "__main__":
+#     input_from_file(states, sigma, start_state, accepting_states, transition_functions)
+
+
+
 ###########################################################################################
 #Ví dụ otomat = { states, sigma, start_state, accepting_states, transition_functions }
-states = ['P0', 'P1', 'P2']
-sigma = ['a', 'b', 'c']
-start_state = 'P0'
-accepting_states = ['P1', 'P2']
+states = ['A', 'B', 'C']
+sigma = ['0', '1']                                 
+start_state = 'A'                                   
+accepting_states = ['C']
 
-transition_functions = {
-        'P0' : {
-            'a' : ['P1'],
-            'b' : ['P1', 'P2'],
-            'c' : ['P2']
+transition_functions = {                            # '-' nếu biểu diễn epsilon , nếu không có đường đi thì không biểu diễn
+        'A' : {
+            '0' : ['B', 'C'],
+            '1' : ['A'],
+            '-' : ['B']
         },
-        'P1' : {
-            'a' : ['P2'],
-            'c' : ['P0', 'P2'],
+        'B' : {
+            '1' : ['B'],
+            '-' : ['C']
         },
-        'P2' : {
-            'a' : ['P1'],
-            'b' : ['P1'],
-            'c' : ['P2']
+        'C' : {
+            '0' : ['C'],
+            '1' : ['C']
         }
     }
 ###########################################################################################
