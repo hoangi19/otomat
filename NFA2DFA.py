@@ -149,10 +149,10 @@ if __name__ == "__main__":
             print("File input lỗi : hàm chuyển : ", x)
             exit()
         if tmp[1] not in sigma:
-            print("File input error : hàm chuyển : ", x)
+            print("File input lỗi : hàm chuyển : ", x)
             exit()
         if len(tmp) < 3:
-            print("File input error : hàm chuyển : ", x)
+            print("File input lỗi : hàm chuyển : ", x)
             exit()
         transition_functions[tmp[0]] = {}
         transition_functions[tmp[0]][tmp[1]] = tmp[2:]
