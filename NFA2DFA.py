@@ -102,42 +102,118 @@ class DFA:
         self.transition_functions = res_transition_functions
 
 if __name__ == "__main__":
+    print("File input dạng :")
+    print("trang_thai_1,trang_thai_2,...,trang_thai_n")
+    print("ky_tu_1,ky_tu_2,ky_tu_3,...,ky_tu_4")
+    print("trang_thai_khoi_dau")
+    print("trang_thai_ket_1,trang_thai_ket_2,...,trang_thai_ket_k")
+    print("trang_thai,ky_tu,trang_thai_moi_1,trang_thai_moi_2,..")
+    print(".....\n....\n....\n")
+    print("trang_thai,ky_tu,trang_thai_moi_1,trang_thai_moi_2,..")
+
+    print("\n\n ###################################################### \n\n")
+    print("Lưu ý : sử dụng \'-\' thay cho epsilon")
+    print("\n\n ###################################################### \n\n")
     states = set()
     sigma = set()
     start_state = ''
     accepting_states = set()
     transition_functions = {}
     
-    input_file_name = "inputOtomat.txt"
-    # input_file_name = input("path to file input : ")
+    # input_file_name = "inputOtomat.txt"
+    input_file_name = input("Đường dẫn tới file input : ")
     ip_file = open(input_file_name, 'r')
     states = ip_file.readline()[:-1].split(",")
     sigma = ip_file.readline()[:-1].split(",")
+
     start_state = ip_file.readline()[:-1]
+    if start_state not in states:
+        print("File input lỗi : trạng thái bắt đầu  : ", start_state)
+        exit()
+
     accepting_states = ip_file.readline()[:-1].split(",")
     for ac in accepting_states:
         if ac not in states:
-            print("File input error : accepting states : ", ac)
+            print("File input lỗi : trạng thái kết : ", ac)
             exit()
 
     # transition_functions
     for x in ip_file:
-        tmp = x[:-1].split(",")
+        tmp = []
+        if x[-1] == '\n':
+            tmp = x[:-1].split(",")
+        else:
+            tmp = x.split(",")
+        print(tmp)
         if tmp[0] not in states:
-            print("File input error : transition functions : ", x)
+            print("File input lỗi : hàm chuyển : ", x)
             exit()
         if tmp[1] not in sigma:
-            print("File input error : transition functions : ", x)
+            print("File input error : hàm chuyển : ", x)
             exit()
         if len(tmp) < 3:
-            print("File input error : transition functions : ", x)
+            print("File input error : hàm chuyển : ", x)
             exit()
         transition_functions[tmp[0]] = {}
         transition_functions[tmp[0]][tmp[1]] = tmp[2:]
-        print(transition_functions[tmp[0]][tmp[1]])
-        
-
+    
     ip_file.close()
+
+    print("Otomat trước khi đơn định đơn định : ")
+    print("Tập trạng thái : ", set(sorted(states)))
+    print("Bảng chữ cái vào : ", set(sorted(sigma)))
+    print("Trạng thái khởi đầu : ", start_state)
+    print("Tập trạng thái kết : ", set(sorted(accepting_states)))
+
+    print("{:<20}".format("δ"), end="")
+    for symbol in sigma:
+        print("{:<20}".format(symbol), end="")
+    print("{:<20}".format("epsilon"), end="")
+
+    print()
+    for s in sorted(states):
+        print("{:<20}".format(s), end="")
+        for symbol in sigma:
+            tmp = '-'
+            if not s in transition_functions:
+                print("{:<20}".format(tmp), end="")
+                continue
+            if symbol in transition_functions[s]:
+                tmp = ','.join(transition_functions[s][symbol])
+            print("{:<20}".format(tmp), end="")
+        
+        tmp = '-'
+        if not s in transition_functions:
+            print("{:<20}".format(tmp), end="")
+            continue
+        if '-' in transition_functions[s]:
+            tmp = ','.join(transition_functions[s]['-'])
+        print("{:<20}".format(tmp), end="")
+
+        print()
+
+    print("\n########################################################\n")
+
+    otomat = DFA(states, sigma, start_state, accepting_states, transition_functions)
+
+    print("Otomat sau khi đơn định đơn định : ")
+    print("Tập trạng thái : ", set(sorted(otomat.states)))
+    print("Bảng chữ cái vào : ", set(sorted(otomat.sigma)))
+    print("Trạng thái khởi đầu : ", otomat.start_state)
+    print("Tập trạng thái kết : ", set(sorted(otomat.accepting_states)))
+
+    print("{:<20}".format("δ"), end="")
+    for symbol in otomat.sigma:
+        print("{:<20}".format(symbol), end="")
+    print()
+    for s in sorted(otomat.states):
+        print("{:<20}".format(s), end="")
+        for symbol in otomat.sigma:
+            if not s in otomat.transition_functions:
+                print("{:<20}".format(tmp), end="")
+                continue
+            print("{:<20}".format(otomat.transition_functions[s][symbol]), end="")
+        print()
 
 
 
