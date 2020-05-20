@@ -108,7 +108,7 @@ if __name__ == "__main__":
     print("trang_thai_khoi_dau")
     print("trang_thai_ket_1,trang_thai_ket_2,...,trang_thai_ket_k")
     print("trang_thai,ky_tu,trang_thai_moi_1,trang_thai_moi_2,..")
-    print(".....\n....\n....\n")
+    print(".....\n.....\n.....\n")
     print("trang_thai,ky_tu,trang_thai_moi_1,trang_thai_moi_2,..")
 
     print("\n\n ###################################################### \n\n")
@@ -144,11 +144,10 @@ if __name__ == "__main__":
             tmp = x[:-1].split(",")
         else:
             tmp = x.split(",")
-        print(tmp)
         if tmp[0] not in states:
             print("File input lỗi : hàm chuyển : ", x)
             exit()
-        if tmp[1] not in sigma:
+        if tmp[1] not in sigma+['-']:
             print("File input lỗi : hàm chuyển : ", x)
             exit()
         if len(tmp) < 3:

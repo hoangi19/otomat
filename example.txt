@@ -4,6 +4,8 @@ A
 C
 A,0,B,C
 A,1,A
+A,-,B
 B,1,B
+B,-,C
 C,0,C
 C,1,C
