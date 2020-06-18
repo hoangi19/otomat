@@ -9,6 +9,7 @@ class DFA:
         
         self.fill_otomat()
         self.NFA2DFA()
+        self.minization_DFA()
     
     #Trạng thái từ state nhận epsilon
     def e_closure(self, state):
@@ -100,6 +101,89 @@ class DFA:
         self.start_state = '_'.join(str(v) for v in res_start_state)
         self.accepting_states = res_accepting_states
         self.transition_functions = res_transition_functions
+    
+    def minization_DFA(self):
+
+        #draw table and mark all pair P \in F and Q not \in F
+        table = {}
+        for p in self.states:
+            if p not in table:
+                table[p] = {}
+            for q in self.states:
+                if q not in table:
+                    table[q] = {}
+                table[p][q] = 0
+                if p in self.accepting_states and q not in self.accepting_states:
+                    table[p][q] = 1
+                if p not in self.accepting_states and q in self.accepting_states:
+                    table[p][q] = 1
+                table[q][p] = table[p][q]
+
+        #marked all [P,Q] if [δ(P,symbol), δ(Q,symbol)] is marked
+        flag = True
+        while flag:
+            flag = False
+            for p in self.states:
+                for q in self.states:
+                    if table[p][q] == 1:
+                        continue
+                    for x in self.sigma:
+                        tmpP = transition_functions[p][x][0]
+                        tmpQ = transition_functions[q][x][0]
+                        if table[tmpP][tmpQ] == 1:
+                            table[p][q] = 1
+                            flag = True
+
+
+        #create new states
+        new_state = []
+        s = {}
+        for p in self.states:
+            for q in self.states:
+                if table[p][q] == 0:
+                    if p in s and q not in s:
+                        new_state[s[p]].append(q)
+                        s[q] = s[p]
+                    elif q in s and p not in s:
+                        new_state[s[q]].append(p)
+                        s[p] = s[q]
+                    elif p not in s and q not in s:
+                        new_state.append( list(set([p, q])) )
+                        s[p] = len(new_state)-1
+                        s[q] = s[p]
+        
+        #combine states
+        new_transition_functions = {}
+        for ns in new_state:
+            for symbol in self.sigma:
+                str_ns = '_'.join(str(v) for v in ns)
+                if str_ns not in new_transition_functions:
+                    new_transition_functions[str_ns] = {}
+                next_s = self.transition_functions[ns[0]][symbol]
+                next_state = ""
+                for nst in new_state:
+                    if next_s in nst:
+                        next_state = "_".join(str(v) for v in nst)
+                        break
+                new_transition_functions[str_ns][symbol] = next_state
+
+        #make state and find accepted / start state
+        new_acpt = set()
+        res_states = []
+        for ns in new_state:
+            current_state = '_'.join(str(v) for v in ns)
+            res_states.append(current_state)
+            for s in ns:
+                if s in self.accepting_states:
+                    new_acpt.add(current_state)
+                    self.start_state = current_state
+                    break
+        
+        self.states = res_states
+        self.accepting_states = new_acpt
+        self.transition_functions = new_transition_functions
+
+        pass
 
 if __name__ == "__main__":
     print("File input dạng :")
@@ -120,8 +204,8 @@ if __name__ == "__main__":
     accepting_states = set()
     transition_functions = {}
     
-    # input_file_name = "example.txt"
-    input_file_name = input("Đường dẫn tới file input : ")
+    input_file_name = "example.txt"
+    # input_file_name = input("Đường dẫn tới file input : ")
     ip_file = open(input_file_name, 'r')
     states = ip_file.readline()[:-1].split(",")
     sigma = ip_file.readline()[:-1].split(",")
@@ -153,9 +237,9 @@ if __name__ == "__main__":
         if len(tmp) < 3:
             print("File input lỗi : hàm chuyển : ", x)
             exit()
-        transition_functions[tmp[0]] = {}
+        if tmp[0] not in transition_functions:
+            transition_functions[tmp[0]] = {}
         transition_functions[tmp[0]][tmp[1]] = tmp[2:]
-    
     ip_file.close()
 
     print("Otomat trước khi đơn định đơn định : ")
@@ -163,13 +247,12 @@ if __name__ == "__main__":
     print("Bảng chữ cái vào : ", set(sorted(sigma)))
     print("Trạng thái khởi đầu : ", start_state)
     print("Tập trạng thái kết : ", set(sorted(accepting_states)))
-
+    
     print("{:<20}".format("δ"), end="")
     for symbol in sigma:
         print("{:<20}".format(symbol), end="")
-    print("{:<20}".format("epsilon"), end="")
+    print("{:<20}".format("epsilon"), end="\n")
 
-    print()
     for s in sorted(states):
         print("{:<20}".format(s), end="")
         for symbol in sigma:
@@ -180,7 +263,6 @@ if __name__ == "__main__":
             if symbol in transition_functions[s]:
                 tmp = ','.join(transition_functions[s][symbol])
             print("{:<20}".format(tmp), end="")
-        
         tmp = '-'
         if not s in transition_functions:
             print("{:<20}".format(tmp), end="")
