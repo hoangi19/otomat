@@ -128,8 +128,9 @@ class DFA:
                     if table[p][q] == 1:
                         continue
                     for x in self.sigma:
-                        tmpP = transition_functions[p][x][0]
-                        tmpQ = transition_functions[q][x][0]
+                        tmpP = self.transition_functions[p][x]
+                        tmpQ = self.transition_functions[q][x]
+
                         if table[tmpP][tmpQ] == 1:
                             table[p][q] = 1
                             flag = True
@@ -176,8 +177,8 @@ class DFA:
             for s in ns:
                 if s in self.accepting_states:
                     new_acpt.add(current_state)
+                if s == self.start_state:
                     self.start_state = current_state
-                    break
         
         self.states = res_states
         self.accepting_states = new_acpt
