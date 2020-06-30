@@ -25,5 +25,5 @@ void error();
 
 void error()
 {
-    printf("Cannot understand");
+    printf("Parse error.");
 }

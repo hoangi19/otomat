@@ -60,7 +60,7 @@ int main()
     if (yyparse())
         fprintf(stderr, "Successful parsing.\n");
     else
-        fprintf(stderr, "error found.\n");
+        fprintf(stderr, "Parse error.\n");
 }
 
 
