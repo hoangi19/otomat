@@ -31,7 +31,7 @@ Line:
     CMD CMD { printf("%d", $2); exit(0); }
 ;
 CMD: 
-    NAME EQ INTEGER                 { sscanf($1, "%s", var_name); value = $3;}
+    NAME EQ INTEGER NEWLINE                 { sscanf($1, "%s", var_name); value = $3;}
     | NAME OP_PLUS INTEGER          { check_var_name($1); $$ = value + $3; }
     | NAME OP_MINUS INTEGER         { check_var_name($1); $$ = value - $3; }
     | NAME OP_MUL INTEGER           { check_var_name($1); $$ = value * $3; }
@@ -57,10 +57,11 @@ int yyerror(char *s)
 
 int main()
 {
-    if (yyparse())
-        fprintf(stderr, "Successful parsing.\n");
-    else
-        fprintf(stderr, "Parse error.\n");
+    yyparse()
+    // if (yyparse())
+    //     fprintf(stderr, "Successful parsing.\n");
+    // else
+    //     fprintf(stderr, "Parse error.\n");
 }
 
 
