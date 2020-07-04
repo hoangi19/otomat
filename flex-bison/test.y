@@ -19,9 +19,6 @@ int value;
 %token NAME 
 %token EQ OP_PLUS OP_MINUS OP_MUL OP_DIV
 %token NEWLINE
-%left '-' '+'
-%left '*' '/'
-
 %type<val> INTEGER CMD
 %type<name> NAME
 
@@ -37,7 +34,7 @@ CMD:
     | NAME OP_MINUS INTEGER         { check_var_name($1); $$ = value - $3; }
     | NAME OP_MUL INTEGER           { check_var_name($1); $$ = value * $3; }
     | NAME OP_DIV INTEGER           {   check_var_name($1); 
-                                        if ($3 == 0) {printf("INF"); exit(1);};
+                                        if ($3 == 0) {printf("divide by zero"); exit(1);};
                                         $$ = value / $3; }
 ;
 ;
