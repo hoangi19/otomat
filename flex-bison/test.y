@@ -5,12 +5,13 @@
 int yylex();
 int yyerror(char *s);
 int check_var_name(char *s);
-char var_name[20];
+extern FILE* yyin;
+char var_name[30];
 int value;
 %}
 
 %union {
-    char name[20];
+    char name[30];
     int val;
 }
 
@@ -57,11 +58,19 @@ int yyerror(char *s)
 
 int main()
 {
-    yyparse()
-    // if (yyparse())
-    //     fprintf(stderr, "Successful parsing.\n");
-    // else
-    //     fprintf(stderr, "Parse error.\n");
+    FILE *myfile = fopen("test.file", "r");
+    
+    if (!myfile) {
+        printf("Can't open test.file");
+        return -1;
+    }
+    
+    yyin = myfile;
+    // yyin = stdin;
+	// do {
+		yyparse();
+	// } while(!feof(yyin));
+	return 0;
 }
 
 
