@@ -16,11 +16,11 @@ class DFA:
         res = set()
         for s in state:
             res.add(s)
-            if not s in transition_functions:
+            if not s in self.transition_functions:
                 continue
-            if not '-' in transition_functions[s]:
+            if not '-' in self.transition_functions[s]:
                 continue
-            new_state = transition_functions[s]['-']
+            new_state = self.transition_functions[s]['-']
             res = res.union(self.e_closure(new_state))
         return res
 
@@ -28,11 +28,11 @@ class DFA:
     def move(self, state, symbol):
         res = set()
         for s in state:
-            if not s in transition_functions:
+            if not s in self.transition_functions:
                 continue
-            if not symbol in transition_functions[s]:
+            if not symbol in self.transition_functions[s]:
                 continue
-            new_state = transition_functions[s][symbol]
+            new_state = self.transition_functions[s][symbol]
             res = res.union(self.e_closure(new_state))
         return res
     
@@ -40,19 +40,19 @@ class DFA:
     def fill_otomat(self):
         create_extra_state = False #có tạo đỉnh mới hay ko?
         for s in self.states:
-            if not s in transition_functions:
+            if not s in self.transition_functions:
                 create_extra_state = True
-                transition_functions[s] = {}
+                self.transition_functions[s] = {}
             for symbol in self.sigma:
-                if not symbol in transition_functions[s]:
+                if not symbol in self.transition_functions[s]:
                     create_extra_state = True
-                    transition_functions[s][symbol] = [self.extra_state]
+                    self.transition_functions[s][symbol] = [self.extra_state]
     
         if create_extra_state:
             self.states.add(self.extra_state)
-            transition_functions[self.extra_state] = {}
+            self.transition_functions[self.extra_state] = {}
             for symbol in self.sigma:
-                transition_functions[self.extra_state][symbol] = [self.extra_state]
+                self.transition_functions[self.extra_state][symbol] = [self.extra_state]
 
 
     #Chuyển otomat không đơn định sang đơn định
@@ -278,7 +278,7 @@ if __name__ == "__main__":
 
     otomat = DFA(states, sigma, start_state, accepting_states, transition_functions)
 
-    print("Otomat sau khi đơn định đơn định : ")
+    print("Otomat sau đơn định + tối thiểu : ")
     print("Tập trạng thái : ", set(sorted(otomat.states)))
     print("Bảng chữ cái vào : ", set(sorted(otomat.sigma)))
     print("Trạng thái khởi đầu : ", otomat.start_state)
