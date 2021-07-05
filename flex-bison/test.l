@@ -19,6 +19,7 @@ void error();
 "-"             {return(OP_MINUS);}
 "*"             {return(OP_MUL);}
 "/"             {return(OP_DIV);}
+"%"             {return(OP_MOD);}
 .               {error(); return *yytext;}
 %%
 
